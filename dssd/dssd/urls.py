@@ -15,9 +15,13 @@ Including another URLconf
 """
 from .views import *
 from django.contrib import admin
+from dssd import views
 from django.urls import path
+from django.conf.urls import url
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
+    path('registro/',views.Vista_Registro.as_view()),
+    #url(r'^registro/',views.Vista_Registro.as_view()),
     path('', home),
 ]
