@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="flex flex-col justify-center items-center">
+    <h1> Alta Sociedad Anonima </h1>
+    <form method="POST" action="/registro_sa/" class="flex flex-col border-2 w-3/6">
+        {% csrf_token %}
+        <div class="bg-red-200 w-full mt-1 mb-2 flex justify-center items-center">
+            {% if error %}
+                <span>{{error}}</span>
+            {% endif %}
+        </div>
+        <div class="flex flex-col">
+            <label for="nombre"> Nombre </label> 
+            <input class="border border-8 border-black" id="nombre" name="nombre" type="text" placeholder="Ingrese el nombre de la SA" required/>
+        </div>
+        <div class="flex flex-col">
+            <label for="estatuto"> Estatuto </label> 
+            <input class="border border-8 border-black" id="estatuo" name="estatuo" type="file" required/>
+        </div>
+        <div class="flex flex-col">
+            <label for="domicilio_legal"> Domicilio Legal </label> 
+            <input class="border border-8 border-black" id="domicilio_legal" name="domicilio_legal" type="text" placeholder="Ingrese el domicilio legal" required/>
+        </div>
+        <div class="flex flex-col">
+            <label for="nombre"> Domicilio Real </label> 
+            <input class="border border-8 border-black" id="domicilio_real" name="domicilio_real" type="text" placeholder="Ingrese el domicilio real" required/>
+        </div>
+        <div class="flex flex-col mt-2">
+            <h1> Apoderado </h1>
+            <div class="ml-4 mt-2">
+                <div class="flex flex-col">
+                    <label for="nombre_apoderado"> Nombre Apoderado</label> 
+                    <input class="border border-8 border-black" id="nombre_apoderado" name="nombre_apoderado" type="text" placeholder="Ingrese el nombre del apoderado" required/>
+                </div> 
+                <div class="flex flex-col">
+                    <label for="apellido_apoderado"> Apellido Apoderado </label> 
+                    <input class="border border-8 border-black" id="apellido_apoderado" name="apellido_apoderado" type="text" placeholder="Ingrese el apellido del apoderado" required/>
+                </div>
+    
+                <div class="flex flex-col">
+                    <label for="email_apoderado"> Email Apoderado </label> 
+                    <input class="border border-8 border-black" id="email_apoderado" name="email_apoderado" type="email" placeholder="Ingrese el email del apoderado" required/>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <label for="nombre"> Socios </label> 
+            <div class="flex flex-col">
+                <label for="nombre_apoderado"> Nombre Socio</label> 
+                <input class="border border-8 border-black" id="nombre_apoderado" name="nombre_socio" type="text" placeholder="Ingrese el nombre del apoderado" required/>
+            </div> 
+            <div class="flex flex-col">
+                <label for="apellido_apoderado"> Apellido Socio </label> 
+                <input class="border border-8 border-black" id="apellido_apoderado" name="apellido_socio" type="text" placeholder="Ingrese el apellido del apoderado" required/>
+            </div>
+            
+            <span class="bg-green-100 rounded-2xl w-10 h-10">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+            
+        </div>
+        <div class="flex flex-col">
+            <label for="nombre"> Paises que exporta </label> 
+            <select name="countries" multiple>
+                {% for c in countries %}
+                    <option value="{{c.code}}"> {{c.name}} </option>
+                {% endfor %}
+            </select>
+
+        </div>
+        <div class="mt-2">
+            <input class="w-full rounded-xl h-8 bg-green-400 text-white" type="submit" value="Enviar">
+        </div>
+
+        
+    </form>
+</div>
+{% endblock content %}

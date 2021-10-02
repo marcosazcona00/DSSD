@@ -1,3 +1,5 @@
+import json
+
 from django.http import *
 from django.views import View
 
@@ -7,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+import requests
 
 from forms.forms import *
 from django.views.decorators.csrf import csrf_exempt
@@ -47,11 +50,27 @@ class LoginView(View):
     
     @csrf_exempt
     def post(self,request):
-        es_valido = True 
-        if es_valido:
-            user = authenticate(username = request.POST.get("email"), password = request.POST.get("password"))
-            if user is not None:
-                login(request, user)
-                return redirect('/')
+        user = authenticate(username = request.POST.get("email"), password = request.POST.get("password"))
+        if user is not None:
+            login(request, user)
+            return redirect('/')
         return render(request, 'user/login.html', {"error": "Los datos ingresados son incorrectos"})
+
+
+def get_countries():
+    query = {
+        "query": '{ countries { code, name } }'
+    }
+    
+    headers = {'content-type': 'application/json'}
+    response = requests.post('https://countries.trevorblades.com/', json=query, headers=headers)
+    return response.json()['data']['countries']
+
+class RegistroSAView(View):
+    def get(self,request):
+        return render(request,'sociedad_anonima/register.html', context={'countries': get_countries()})
+
+    def post(self,request):
+        print(request.POST)
+        return redirect('/')
 
