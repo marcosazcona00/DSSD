@@ -10,6 +10,8 @@
     {% block links %}{% endblock links%}
 </head>
 <body>
-    Body
+    {% include "components/header.html" %}
+
+    {% block content %} {% endblock content %}
 </body>
 </html>
