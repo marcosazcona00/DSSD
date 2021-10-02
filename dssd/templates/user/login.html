@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="flex justify-center items-center">
+<div class="flex flex-col justify-center items-center">
+    <h1> Inicio de Sesion </h1>
     <form method="POST" action="/login/" class="flex flex-col border-2 w-3/6">
         {% csrf_token %}
         <div class="bg-red-200 w-full mt-1 mb-2 flex justify-center items-center">

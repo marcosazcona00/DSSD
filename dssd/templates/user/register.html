@@ -1,0 +1,32 @@
+{% extends "layout.html"%}
+
+{% block estilos %}
+        label{
+            font-family: Arial;
+        }
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col justify-center items-center">
+    <h1> Registro de Usuario </h1>
+    <form method="POST" action="/registro/" class="flex flex-col border-2 w-3/6">
+        {% csrf_token %}
+        <div class="bg-red-200 w-full mt-1 mb-2 flex justify-center items-center">
+            {% if error %}
+                <span>{{error}}</span>
+            {% endif %}
+        </div>
+        <div class="flex flex-col">
+            <label for="email"> Email </label> 
+            <input class="border border-8 border-black" id="email" name="email" type="email" placeholder="Ingrese su email" required/>
+        </div>
+        <div class="flex flex-col">
+            <label for="password"> Password </label> 
+            <input class="border border-8 border-black" id="password" name="password" type="password" placeholder="Ingrese su password" required/>
+        </div>
+        <div class="mt-2">
+            <input class="w-full rounded-xl h-8 bg-green-400 text-white" type="submit" value="Enviar">
+        </div>
+    </form>
+</div>
+{% endblock content %}
