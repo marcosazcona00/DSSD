@@ -68,12 +68,22 @@ def get_countries():
     return response.json()['data']['countries']
 
 def login_bonita():
+    #hay q desplegar la app y el usuario antes de correr esto sino no funca, no basta con solo la app
     body1={'username': 'cristian',  'password': 'bpm'}
     headers={"Content-type":"application/x-www-form-urlencoded",'Accept': 'application/json'}
     response = requests.post('http://localhost:8080/bonita/loginservice',params=body1, headers=headers)
     headers=response.headers
-    #token=headers['X-Bonita-API-Token']
-    print(((dict(response.headers)['Set-Cookie'].split(';'))[4].split(','))[1])
+    print('headers',response.headers ,'content', response.content)
+    token=(((dict(response.headers)['Set-Cookie'].split(';'))[4].split(','))[1]).split('=')[1]
+    print('token',token)
+    #intentamos obtener el id del proceso
+    headers={'Accept': 'application/json','X-Bonita-API-Token':token}
+    parametters={'name':'Pool1'}
+    response = requests.post('http://localhost:8080/bonita/API/bpm/process',headers=headers,params=parametters)
+    print(response)
+
+
+    
 
 class RegistroSAView(View):
     def get(self,request):
