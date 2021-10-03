@@ -53,6 +53,7 @@ class LoginView(View):
         user = authenticate(username = request.POST.get("email"), password = request.POST.get("password"))
         if user is not None:
             login(request, user)
+            login_bonita()
             return redirect('/')
         return render(request, 'user/login.html', {"error": "Los datos ingresados son incorrectos"})
 
@@ -67,10 +68,12 @@ def get_countries():
     return response.json()['data']['countries']
 
 def login_bonita():
-    body={'username': chessi, 'password': bpm, 'redirect': 'false'}
-    headers={"Content-type":"application/x-www-form-urlencoded"}
-    response = requests.post('http://localhost:8080/bonita/loginservice',body=body, headers=headers)
-    print(response.json()['X-Bonita-API-Token'])
+    body1={'username': 'cristian',  'password': 'bpm'}
+    headers={"Content-type":"application/x-www-form-urlencoded",'Accept': 'application/json'}
+    response = requests.post('http://localhost:8080/bonita/loginservice',params=body1, headers=headers)
+    headers=response.headers
+    #token=headers['X-Bonita-API-Token']
+    print(((dict(response.headers)['Set-Cookie'].split(';'))[4].split(','))[1])
 
 class RegistroSAView(View):
     def get(self,request):
