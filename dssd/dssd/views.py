@@ -66,6 +66,12 @@ def get_countries():
     response = requests.post('https://countries.trevorblades.com/', json=query, headers=headers)
     return response.json()['data']['countries']
 
+def login_bonita():
+    body={'username': chessi, 'password': bpm, 'redirect': 'false'}
+    headers={"Content-type":"application/x-www-form-urlencoded"}
+    response = requests.post('http://localhost:8080/bonita/loginservice',body=body, headers=headers)
+    print(response.json()['X-Bonita-API-Token'])
+
 class RegistroSAView(View):
     def get(self,request):
         return render(request,'sociedad_anonima/register.html', context={'countries': get_countries()})
