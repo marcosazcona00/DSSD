@@ -29,25 +29,26 @@
     }
 
     document.getElementById('form').addEventListener('submit', function(e){ //say this is an anchor
+        event.preventDefault()
         let prevent = false
         let totalPorcentajeSocios = 0;
         let porcentajes = document.getElementsByName("porcentajeSocio");
         porcentajes.forEach(e => {
             totalPorcentajeSocios += parseFloat(e.value)
         })
-        let porcentajeApoderado = document.getElementById("porcentajeApoderado").value
+        let porcentajeApoderado = parseFloat(document.getElementById("porcentajeApoderado").value)
         
         if(porcentajeApoderado < totalPorcentajeSocios){
-            document.getElementById("error-porcentaje").textContent = 'Flaco, el apoderado tiene que ser el mayoritario'
-            console.log("Flaco, el apoderado tiene que ser el mayoritario")
+            document.getElementById("error-porcentaje").textContent = 'El apoderado tiene que ser el mayoritario'
             prevent = true
         }
-        if((parseFloat(porcentajeApoderado) + totalPorcentajeSocios) > 100){
-            document.getElementById("error-porcentaje").textContent = 'El maximo tiene que ser 100%'
+        if((parseFloat(porcentajeApoderado) + totalPorcentajeSocios) != 100){
+            document.getElementById("error-porcentaje").textContent = 'El total del porcentaje tiene que ser 100%'
             prevent = true
         }
         //Chequear que el total sea 100
         if(prevent) event.preventDefault()
+        
     });
 
 </script>
@@ -70,7 +71,7 @@
             <input class="border border-8 border-black" id="nombre" name="nombre" type="text" placeholder="Ingrese el nombre de la SA" required/>
         </div>
         <div class="flex flex-col">
-            <label for="nombre"> Porcentaje de aportes </label> 
+            <label for="nombre"> Porcentaje de aportes del apoderado</label> 
             <input onchange="setPorcentajeApoderado()" class="border border-8 border-black" id="porcentajeApoderado" name="porcentajeApoderado" type="number" min="0" max="100" required/>
         </div>
         <div class="flex flex-col">
