@@ -1,3 +1,5 @@
+from datetime import date
+from models.models import *
 from django.contrib.auth.models import User
 
 class Repository(object):
@@ -11,7 +13,37 @@ class Repository(object):
             return True
         return False
 
+    def create_apoderado(self, nombre, apellido, porcentaje):
+        apoderado =  SocioSociedadAnonima(nombre = nombre,apellido = apellido,porcentaje_aporte = porcentaje)
+        apoderado.save()
+        return apoderado
 
+    def findPiasByCodigGQL(self,codigo_gql):
+        paises_filtered = Pais.objects.filter(codigo_gql=codigo_gql)
+        return paises_filtered[0] if len(paises_filtered) > 0 else None    
+
+    def create_pais(self, codigo_gql):
+        pais = self.findPiasByCodigGQL(codigo_gql)
+        if pais:
+           return pais
+        pais = Pais(codigo_gql = codigo_gql)
+        pais.save()
+        return pais
 
     def add_sociedad_anonima(self, data):
-        pass
+        apoderado = self.create_apoderado(nombre = data['nombre_apoderado'], 
+                    apellido = data['apellido_apoderado'], porcentaje = data['porcentajeApoderado'])
+
+        sociedad_anonima = SociedadAnonima(nombre = data['nombre'],fecha_creacion = date.today() ,estatuto = data['estatuto'],
+                        domicilio_real=data['domicilio_real'],domicilio_legal=data['domicilio_legal'],email_apoderado=data['email_apoderado'],
+                        apoderado = apoderado)
+        sociedad_anonima.save()
+
+        for codigo_pais in data['paises']:
+            pais = self.create_pais(codigo_pais)
+            sociedad_anonima.paises_exporta.add(pais)
+
+        for socio in data['socios']:
+            socio = self.create_apoderado(nombre = socio['nombre'], apellido = socio['apellido'], porcentaje = socio['porcentaje'])
+            socio.sociedad = sociedad_anonima
+            socio.save()

@@ -1,4 +1,3 @@
-import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Max
@@ -21,7 +20,7 @@ class SocioSociedadAnonima(models.Model):
     nombre = models.CharField(max_length = 255, null = False)
     apellido = models.CharField(max_length = 255 , null = False)
     porcentaje_aporte = models.FloatField()
-    sociedad = models.OneToOneField(SociedadAnonima, null = True, on_delete = models.CASCADE) #Si es null, entonces es un apoderado
+    sociedad = models.ForeignKey(SociedadAnonima, null = True, on_delete = models.CASCADE) #Si es null, entonces es un apoderado
 
 class Pais(models.Model):
     class Meta:

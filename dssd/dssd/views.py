@@ -103,6 +103,8 @@ class RegistroSAView(View):
             'estatuto': request.POST.get('estatuo'),
             'domicilio_legal': request.POST.get('domicilio_legal'),
             'domicilio_real': request.POST.get('domicilio_real'),
+            'nombre_apoderado': request.POST.get('nombre_apoderado'),
+            'apellido_apoderado': request.POST.get('apellido_apoderado'),
             'email_apoderado': request.POST.get('email_apoderado'),
         }
         
@@ -122,6 +124,6 @@ class RegistroSAView(View):
         data['socios'] = socios
         data['paises'] = request.POST.getlist('countries')
     
-        ok = repository.add_sociedad_anonima(data)
+        repository.add_sociedad_anonima(data)
         return redirect('/')
 
