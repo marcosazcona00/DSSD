@@ -10,3 +10,8 @@ class Repository(object):
             user = User.objects.create_user(username = email, password = password)
             return True
         return False
+
+
+
+    def add_sociedad_anonima(self, data):
+        pass

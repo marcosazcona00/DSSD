@@ -53,7 +53,7 @@ class LoginView(View):
         user = authenticate(username = request.POST.get("email"), password = request.POST.get("password"))
         if user is not None:
             login(request, user)
-            login_bonita()
+            #login_bonita()
             return redirect('/')
         return render(request, 'user/login.html', {"error": "Los datos ingresados son incorrectos"})
 
@@ -90,6 +90,38 @@ class RegistroSAView(View):
         return render(request,'sociedad_anonima/register.html', context={'countries': get_countries()})
 
     def post(self,request):
-        print(request.POST)
+        # <QueryDict: {'csrfmiddlewaretoken': ['OtcUT4CJfJ5ydLhTB3KTXG6OUNKbDSMS4bYg4zBjB6Yql3uA3beuMtHrqawWBlDw'], 
+        # 'nombre': ['.'], 'porcentajeApoderado': ['80'], 'estatuo': ['tokengit.txt'], 'domicilio_legal': ['asd'], 
+        # 'domicilio_real': ['asd'], 'nombre_apoderado': ['asd'], 'apellido_apoderado': ['asd'], 
+        # 'email_apoderado': ['a@gmail.com'], 'nombre_socio': ['marcos', 'fran'], 'apellido_socio': ['marcos', 'fran'], 
+        # 'porcentajeSocio': ['10', '10'], 'countries': ['AT', 'AU']}>
+        # [06/Oct/2021 23:53:04] "POST /registro_sa/ HTTP/1.1" 302 0
+
+        data = {
+            'nombre': request.POST.get('nombre'),
+            'porcentajeApoderado': float(request.POST.get('porcentajeApoderado')),
+            'estatuto': request.POST.get('estatuo'),
+            'domicilio_legal': request.POST.get('domicilio_legal'),
+            'domicilio_real': request.POST.get('domicilio_real'),
+            'email_apoderado': request.POST.get('email_apoderado'),
+        }
+        
+        ### Agregamos la info de socios
+        nombre_socios = request.POST.getlist('nombre_socio')
+        apellido_socios = request.POST.getlist('apellido_socio')
+        porcentaje_socios = request.POST.getlist('porcentajeSocio')
+        
+        socios = []
+        for i in range(len(nombre_socios)):
+            print(nombre_socios[i])
+            socios.append({
+                'nombre': nombre_socios[i] , 
+                'apellido': apellido_socios[i], 
+                'porcentaje': float(porcentaje_socios[i])
+            })
+        data['socios'] = socios
+        data['paises'] = request.POST.getlist('countries')
+    
+        ok = repository.add_sociedad_anonima(data)
         return redirect('/')
 

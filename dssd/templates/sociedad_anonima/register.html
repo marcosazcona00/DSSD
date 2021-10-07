@@ -1,9 +1,64 @@
 {% extends "layout.html" %}
 
+{% block scripts %}
+<script>
+    let porcentajeApoderado = 0;
+    let idSocio = 1;
+    function setPorcentajeApoderado(){
+        let porcentajeApoderado = document.getElementById("porcentajeApoderado").value
+        console.log(`Porcentaje apoderado ${porcentajeApoderado}`)
+    }
+
+    function agregarSocio(){
+        idSocio += 1
+        const content = `
+            <div class="flex flex-col">
+                <label for="nombre_apoderado"> Nombre Socio</label> 
+                <input class="border border-8 border-black" id="nombre_apoderado" name="nombre_socio" type="text" placeholder="Ingrese el nombre del apoderado" required/>
+            </div> 
+            <div class="flex flex-col">
+                <label for="apellido_apoderado"> Apellido Socio </label> 
+                <input class="border border-8 border-black" id="apellido_apoderado" name="apellido_socio" type="text" placeholder="Ingrese el apellido del apoderado" required/>
+            </div>
+            <div class="flex flex-col">
+                <label> Porcentaje Socio</label>
+                <input class="border border-8 border-black" id="porcentajeSocio" name="porcentajeSocio" type="number" min="0" max="100" required/>
+            </div>       
+            `
+        document.getElementById("socios").innerHTML = document.getElementById("socios").innerHTML + content
+    }
+
+    document.getElementById('form').addEventListener('submit', function(e){ //say this is an anchor
+        let prevent = false
+        let totalPorcentajeSocios = 0;
+        let porcentajes = document.getElementsByName("porcentajeSocio");
+        porcentajes.forEach(e => {
+            totalPorcentajeSocios += parseFloat(e.value)
+        })
+        let porcentajeApoderado = document.getElementById("porcentajeApoderado").value
+        
+        if(porcentajeApoderado < totalPorcentajeSocios){
+            document.getElementById("error-porcentaje").textContent = 'Flaco, el apoderado tiene que ser el mayoritario'
+            console.log("Flaco, el apoderado tiene que ser el mayoritario")
+            prevent = true
+        }
+        if((parseFloat(porcentajeApoderado) + totalPorcentajeSocios) > 100){
+            document.getElementById("error-porcentaje").textContent = 'El maximo tiene que ser 100%'
+            prevent = true
+        }
+        //Chequear que el total sea 100
+        if(prevent) event.preventDefault()
+    });
+
+</script>
+{% endblock scripts %}
+
+
 {% block content %}
 <div class="flex flex-col justify-center items-center">
     <h1> Alta Sociedad Anonima </h1>
-    <form method="POST" action="/registro_sa/" class="flex flex-col border-2 w-3/6">
+    <label id="error-porcentaje" class="h-5 bg-red-300"></label>
+    <form id="form" method="POST" action="/registro_sa/" class="flex flex-col border-2 w-3/6" >
         {% csrf_token %}
         <div class="bg-red-200 w-full mt-1 mb-2 flex justify-center items-center">
             {% if error %}
@@ -13,6 +68,10 @@
         <div class="flex flex-col">
             <label for="nombre"> Nombre </label> 
             <input class="border border-8 border-black" id="nombre" name="nombre" type="text" placeholder="Ingrese el nombre de la SA" required/>
+        </div>
+        <div class="flex flex-col">
+            <label for="nombre"> Porcentaje de aportes </label> 
+            <input onchange="setPorcentajeApoderado()" class="border border-8 border-black" id="porcentajeApoderado" name="porcentajeApoderado" type="number" min="0" max="100" required/>
         </div>
         <div class="flex flex-col">
             <label for="estatuto"> Estatuto </label> 
@@ -44,23 +103,29 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-col">
-            <label for="nombre"> Socios </label> 
-            <div class="flex flex-col">
-                <label for="nombre_apoderado"> Nombre Socio</label> 
-                <input class="border border-8 border-black" id="nombre_apoderado" name="nombre_socio" type="text" placeholder="Ingrese el nombre del apoderado" required/>
-            </div> 
-            <div class="flex flex-col">
-                <label for="apellido_apoderado"> Apellido Socio </label> 
-                <input class="border border-8 border-black" id="apellido_apoderado" name="apellido_socio" type="text" placeholder="Ingrese el apellido del apoderado" required/>
+        <div class="flex flex-col mt-3">
+            <div class="flex flex-row">
+                <label for="nombre"> Socios </label> 
+                <button class="w-10" onclick="agregarSocio()"> + </button>
             </div>
-            
-            <span class="bg-green-100 rounded-2xl w-10 h-10">
-                <i class="fa-solid fa-plus"></i>
-            </span>
+            <div id="socios">
+                <div class="flex flex-col">
+                    <label> Nombre Socio</label> 
+                    <input class="border border-8 border-black" id="nombre_apoderado" name="nombre_socio" type="text" placeholder="Ingrese el nombre del apoderado" required/>
+                </div> 
+                <div class="flex flex-col">
+                    <label> Apellido Socio </label> 
+                    <input class="border border-8 border-black" id="apellido_apoderado" name="apellido_socio" type="text" placeholder="Ingrese el apellido del apoderado" required/>
+                </div>
+                <div class="flex flex-col">
+                    <label> Porcentaje Socio</label>
+                    <input class="border border-8 border-black" id="porcentajeSocio" name="porcentajeSocio" type="number" min="0" max="100" required/>
+                </div>
+            </div>
+
             
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col mt-3">
             <label for="nombre"> Paises que exporta </label> 
             <select name="countries" multiple>
                 {% for c in countries %}

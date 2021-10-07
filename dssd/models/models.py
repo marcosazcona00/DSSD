@@ -27,7 +27,6 @@ class Pais(models.Model):
     class Meta:
         db_table = 'Pais'
     codigo_gql = models.CharField(max_length = 255, null = False)
-    nombre_gql = models.CharField(max_length = 255, null = False)
 
 
 
