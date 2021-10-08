@@ -39,11 +39,17 @@ class Repository(object):
                         apoderado = apoderado)
         sociedad_anonima.save()
 
-        for codigo_pais in data['paises']:
-            pais = self.create_pais(codigo_pais)
+        if(len(data['paises'])== 0):
+            pais = self.create_pais("AR")
             sociedad_anonima.paises_exporta.add(pais)
+        else:
+            for codigo_pais in data['paises']:
+                pais = self.create_pais(codigo_pais)
+                sociedad_anonima.paises_exporta.add(pais)
 
         for socio in data['socios']:
             socio = self.create_apoderado(nombre = socio['nombre'], apellido = socio['apellido'], porcentaje = socio['porcentaje'])
             socio.sociedad = sociedad_anonima
             socio.save()
+
+        return sociedad_anonima
