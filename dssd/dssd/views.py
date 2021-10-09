@@ -78,7 +78,7 @@ def login_bonita():
 
     return [cookies, response.cookies.get('X-Bonita-API-Token')]
 
-def enviar_formulario(id_sociedad_anonima = 28):
+def enviar_formulario(id_sociedad_anonima):
     
     #Obtenemos el token
     proceso = {'s': 'Pool3'}
@@ -91,17 +91,14 @@ def enviar_formulario(id_sociedad_anonima = 28):
 
     #creamos el case
     header = {'X-Bonita-API-Token': str(token),"cookie":cookies}
-    body='{"processDefinitionId":"6448109745549346329"}'
-    response = requests.request("POST",'http://localhost:8080/bonita/API/bpm/case', headers=header,data=body) 
-    print(response.json())
+    body1='{"processDefinitionId":'+ str(id_proceso) + '}'
+    response = requests.request("POST",'http://localhost:8080/bonita/API/bpm/case', headers=header,data=body1) 
     id_caso=response.json()["id"]
     
     #seteamos el valor de la petición para el alta
     body2 = '{"type":"java.lang.String","value": ' + str(id_sociedad_anonima) + '}'
-    print(body2)
     url=f'http://localhost:8080/bonita/API/bpm/caseVariable/{id_caso}/id_pedido'
     response = requests.request("PUT",url, headers=header,data=body2) 
-    print(response.status_code,response.text)
 
 
 
