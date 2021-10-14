@@ -13,6 +13,7 @@ class SociedadAnonima(models.Model):
     email_apoderado = models.EmailField()
     apoderado = models.OneToOneField('SocioSociedadAnonima', null = False, on_delete = models.CASCADE)
     paises_exporta = models.ManyToManyField('Pais')
+    estados_exporta = models.ManyToManyField('Estado')
 
 class SocioSociedadAnonima(models.Model):
     class Meta:
@@ -27,5 +28,8 @@ class Pais(models.Model):
         db_table = 'Pais'
     codigo_gql = models.CharField(max_length = 255, null = False)
 
-
-
+class Estado(models.Model):
+    class Meta:
+        db_table = 'Estado'
+    nombre_gql = models.CharField(max_length = 255, null = False)
+    pais_gql = models.CharField(max_length = 255, null = False)

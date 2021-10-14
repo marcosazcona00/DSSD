@@ -1,6 +1,9 @@
 <header class="flex flex-row h-20 pt-4 bg-gray-200">
     <div class="w-1/2">
         <span class="pl-2"> DSSD </span>
+        {% if request.user.is_authenticated %}
+            <a href="/registro_sa">Alta Sociedad</a>
+        {% endif %}
     </div>
 
     <div class="w-1/2 flex flex-row justify-end pr-10">

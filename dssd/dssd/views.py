@@ -58,7 +58,7 @@ class LoginView(View):
 
 def get_countries():
     query = {
-        "query": '{ countries { code, name } }'
+        "query": '{ countries { code, name, states { name } } }'
     }
     
     headers = {'content-type': 'application/json'}
@@ -106,16 +106,11 @@ def enviar_formulario(id_sociedad_anonima):
 
 class RegistroSAView(View):
     def get(self,request):
+        if not request.user.is_authenticated:
+           return redirect('/login/') 
         return render(request,'sociedad_anonima/register.html', context={'countries': get_countries()})
 
     def post(self,request):
-        # <QueryDict: {'csrfmiddlewaretoken': ['OtcUT4CJfJ5ydLhTB3KTXG6OUNKbDSMS4bYg4zBjB6Yql3uA3beuMtHrqawWBlDw'], 
-        # 'nombre': ['.'], 'porcentajeApoderado': ['80'], 'estatuo': ['tokengit.txt'], 'domicilio_legal': ['asd'], 
-        # 'domicilio_real': ['asd'], 'nombre_apoderado': ['asd'], 'apellido_apoderado': ['asd'], 
-        # 'email_apoderado': ['a@gmail.com'], 'nombre_socio': ['marcos', 'fran'], 'apellido_socio': ['marcos', 'fran'], 
-        # 'porcentajeSocio': ['10', '10'], 'countries': ['AT', 'AU']}>
-        # [06/Oct/2021 23:53:04] "POST /registro_sa/ HTTP/1.1" 302 0
-
         data = {
             'nombre': request.POST.get('nombre'),
             'porcentajeApoderado': float(request.POST.get('porcentajeApoderado')),
@@ -134,7 +129,6 @@ class RegistroSAView(View):
         
         socios = []
         for i in range(len(nombre_socios)):
-            print(nombre_socios[i])
             socios.append({
                 'nombre': nombre_socios[i] , 
                 'apellido': apellido_socios[i], 
@@ -142,6 +136,7 @@ class RegistroSAView(View):
             })
         data['socios'] = socios
         data['paises'] = request.POST.getlist('countries')
+        data['estados'] = request.POST.getlist('states')
     
         sociedad_anonima = repository.add_sociedad_anonima(data)
         enviar_formulario(sociedad_anonima.id)

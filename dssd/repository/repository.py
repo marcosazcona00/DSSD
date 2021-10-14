@@ -29,6 +29,18 @@ class Repository(object):
         pais = Pais(codigo_gql = codigo_gql)
         pais.save()
         return pais
+    
+    def findEstadoByNameGQL(self,nombre_gql):
+        estados_filtered = Estado.objects.filter(nombre_gql=nombre_gql)
+        return estados_filtered[0] if len(estados_filtered) > 0 else None    
+
+    def create_estado(self, nombre_gql, code_pais_gql):
+        estado = self.findEstadoByNameGQL(nombre_gql)
+        if estado:
+            return estado
+        estado = Estado(nombre_gql = nombre_gql, pais_gql = code_pais_gql)
+        estado.save()
+        return estado
 
     def add_sociedad_anonima(self, data):
         apoderado = self.create_apoderado(nombre = data['nombre_apoderado'], 
@@ -40,13 +52,21 @@ class Repository(object):
         sociedad_anonima.save()
 
         if(len(data['paises'])== 0):
+            # Si no vienen paises, por defecto definimos a argentina
             pais = self.create_pais("AR")
             sociedad_anonima.paises_exporta.add(pais)
         else:
             for codigo_pais in data['paises']:
                 pais = self.create_pais(codigo_pais)
                 sociedad_anonima.paises_exporta.add(pais)
-
+        
+        # Agregamos los estados a los que se exporta en la bd
+        for estado in data['estados']:
+            nombre_estado_gql = estado.split(':')[0]
+            code_pais_gql = estado.split(':')[1]
+            estado = self.create_estado(nombre_estado_gql,code_pais_gql)
+            sociedad_anonima.estados_exporta.add(estado)
+            
         for socio in data['socios']:
             socio = self.create_apoderado(nombre = socio['nombre'], apellido = socio['apellido'], porcentaje = socio['porcentaje'])
             socio.sociedad = sociedad_anonima
